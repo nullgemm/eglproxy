@@ -45,7 +45,6 @@ FLAGS+= -std=c99 -pedantic -g
 FLAGS+= -Wall -Wextra -Werror=vla -Werror
 FLAGS+= -Wno-unused-parameter
 FLAGS+= -Wno-cast-function-type
-FLAGS+= -DEGLPROXY_STATIC
 
 LINK = -shared -lgdi32 -lopengl32
 endif
