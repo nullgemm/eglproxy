@@ -1,5 +1,5 @@
 NAME = eglproxy
-NATIVE ?= TRUE
+NATIVE ?= FALSE
 
 ifeq ($(NATIVE), TRUE)
 WINDOWS_VERSION = 10
@@ -7,6 +7,9 @@ WINDOWS_VERSION_SDK = 10.0.19041.0
 WINDOWS_VERSION_VISUAL_STUDIO = 2019
 WINDOWS_VERSION_MSVC = 14.28.29333
 
+LIB = "/c/Program Files (x86)/Microsoft Visual Studio/$\
+$(WINDOWS_VERSION_VISUAL_STUDIO)/BuildTools/VC/Tools/MSVC/$\
+$(WINDOWS_VERSION_MSVC)/bin/Hostx64/x64/lib.exe"
 CC = "/c/Program Files (x86)/Microsoft Visual Studio/$\
 $(WINDOWS_VERSION_VISUAL_STUDIO)/BuildTools/VC/Tools/MSVC/$\
 $(WINDOWS_VERSION_MSVC)/bin/Hostx64/x64/cl.exe"
@@ -42,6 +45,7 @@ FLAGS+= -std=c99 -pedantic -g
 FLAGS+= -Wall -Wextra -Werror=vla -Werror
 FLAGS+= -Wno-unused-parameter
 FLAGS+= -Wno-cast-function-type
+FLAGS+= -DEGLPROXY_STATIC
 
 LINK = -shared -lgdi32 -lopengl32
 endif
@@ -70,7 +74,7 @@ endif
 
 # aliases
 .PHONY: final
-final: $(INCD) $(BIND)/$(NAME).lib $(BIND)/$(NAME).dll
+final: $(INCD) $(BIND)/$(NAME).dll $(BIND)/$(NAME).lib
 
 # get EGL headers
 $(INCD):
@@ -106,7 +110,11 @@ endif
 $(BIND)/$(NAME).lib: $(SRCS_OBJS)
 	@echo "compiling executable $@"
 	@mkdir -p $(@D)
+ifeq ($(NATIVE), TRUE)
+	@$(LIB) /OUT:$@ $^
+else
 	@ar -rcs $@ $^
+endif
 
 # tools
 clean:

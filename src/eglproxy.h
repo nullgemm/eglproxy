@@ -8,12 +8,10 @@
 #pragma warning( disable: 4255 )
 #endif /* _MSC_VER */
 
-#if defined(_WIN32) && !defined(__SCITECH_SNAP__)
-#   if defined(eglproxy_EXPORTS)
-#       define EGLAPI __declspec(dllexport)
-#   else
-#       define EGLAPI
-#   endif
+#if defined(EGLPROXY_STATIC)
+#define EGLAPI
+#else
+#define EGLAPI __declspec(dllexport)
 #endif
 
 #include <EGL/egl.h>
