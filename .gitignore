@@ -1,5 +1,3 @@
-*.swp
-*~
-*.a
-*.o
-/libeglproxy.a
+bin
+obj
+inc
