@@ -1,4 +1,4 @@
-NAME = eglproxy.dll
+NAME = eglproxy
 NATIVE ?= FALSE
 
 ifeq ($(NATIVE), TRUE)
@@ -36,7 +36,7 @@ SRCS_OBJS := $(patsubst %.c,$(OBJD)/%.o,$(SRCS))
 
 # aliases
 .PHONY: final
-final: $(INCD) $(BIND)/$(NAME)
+final: $(INCD) $(BIND)/$(NAME).lib $(BIND)/$(NAME).dll
 
 # get EGL headers
 $(INCD):
@@ -55,10 +55,15 @@ $(OBJD)/%.o: %.c
 	@$(CC) $(INCL) $(FLAGS) -c -o $@ $<
 
 # final executable
-$(BIND)/$(NAME): $(SRCS_OBJS)
+$(BIND)/$(NAME).dll: $(SRCS_OBJS)
 	@echo "compiling executable $@"
 	@mkdir -p $(@D)
 	@$(CC) -o $@ $^ $(LINK)
+
+$(BIND)/$(NAME).lib: $(SRCS_OBJS)
+	@echo "compiling executable $@"
+	@mkdir -p $(@D)
+	@ar -rcs $@ $^
 
 # tools
 clean:
