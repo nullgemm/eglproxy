@@ -23,7 +23,7 @@ src+=("src/eglproxy.c")
 src+=("src/egl_proc.c")
 src+=("src/egl_wgl.c")
 
-flags+=("-Z7 -Zc:inline")
+flags+=("-Zc:inline")
 
 flags+=("-Isrc")
 flags+=("-Iinc")
@@ -45,7 +45,6 @@ defines+=("-D_WIN32_WINNT=0x0A00")
 defines+=("-DCINTERFACE")
 defines+=("-DCOBJMACROS")
 
-ldflags+=("-DEBUG:FULL")
 ldflags+=("-LIBPATH:\"/c/Program Files (x86)/Windows Kits/\
 $ver_windows/Lib/$ver_windows_sdk/um/x64\"")
 ldflags+=("-LIBPATH:\"/c/Program Files (x86)/Microsoft Visual Studio/\
@@ -60,6 +59,16 @@ ldlibs+=("opengl32.lib")
 makefile=makefile_msvc
 
 make/scripts/egl_get.sh
+
+# build type
+read -p "optimize? ([1] optimize | [2] debug): " optimize
+
+if [ $optimize -eq 1 ]; then
+flags+=("-O2")
+else
+flags+=("-Z7")
+ldflags+=("-DEBUG:FULL")
+fi
 
 # create empty makefile
 echo ".POSIX:" > $makefile

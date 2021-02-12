@@ -11,7 +11,7 @@ src+=("src/eglproxy.c")
 src+=("src/egl_proc.c")
 src+=("src/egl_wgl.c")
 
-flags+=("-std=c99" "-pedantic" "-g")
+flags+=("-std=c99" "-pedantic")
 flags+=("-Wall" "-Wextra" "-Werror=vla" "-Werror")
 flags+=("-Wno-address-of-packed-member")
 flags+=("-Wno-unused-parameter")
@@ -35,6 +35,15 @@ ldlibs+=("-lopengl32")
 makefile=makefile_mingw
 
 make/scripts/egl_get.sh
+
+# build type
+read -p "optimize? ([1] optimize | [2] debug): " optimize
+
+if [ $optimize -eq 1 ]; then
+flags+=("-O2")
+else
+flags+=("-g")
+fi
 
 # create empty makefile
 echo ".POSIX:" > $makefile
