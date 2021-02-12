@@ -1,0 +1,51 @@
+.POSIX:
+NAME = eglproxy
+
+CC = x86_64-w64-mingw32-gcc
+LDFLAGS+= 
+LDLIBS+= -lgdi32 -lopengl32
+
+CFLAGS+= -std=c99
+CFLAGS+= -pedantic
+CFLAGS+= -g
+CFLAGS+= -Wall
+CFLAGS+= -Wextra
+CFLAGS+= -Werror=vla
+CFLAGS+= -Werror
+CFLAGS+= -Wno-address-of-packed-member
+CFLAGS+= -Wno-unused-parameter
+CFLAGS+= -Wno-implicit-fallthrough
+CFLAGS+= -Wno-cast-function-type
+CFLAGS+= -Wno-incompatible-pointer-types
+CFLAGS+= -Isrc
+CFLAGS+= -Iinc
+
+CFLAGS+= -DUNICODE
+CFLAGS+= -D_UNICODE
+CFLAGS+= -DWINVER=0x0A00
+CFLAGS+= -D_WIN32_WINNT=0x0A00
+CFLAGS+= -DCINTERFACE
+CFLAGS+= -DCOBJMACROS
+
+OBJ+= src/eglproxy.o
+OBJ+= src/egl_proc.o
+OBJ+= src/egl_wgl.o
+
+final: inc bin/$(NAME).dll
+
+inc:
+	make/scripts/egl_get.sh
+
+bin/$(NAME).dll: $(OBJ)
+	mkdir -p $(@D)
+	$(CC) $(LDFLAGS) -shared -o $@ $^ $(LDLIBS) -Wl,--out-implib,$(@D)/lib$(NAME).a
+
+eglproxy.o: src/eglproxy.c src/eglproxy.h
+egl_proc.o: src/egl_proc.c src/eglproxy.h
+egl_wgl.o: src/egl_wgl.c src/eglproxy.h
+
+clean:
+	make/scripts/clean.sh
+
+remotes:
+	make/scripts/git_remotes.sh
